@@ -13,8 +13,13 @@ var ParticleEngine = function(startPos,numOfParticles,lifespam,emitterTime)
     this.runTime = 0;
     this.emitterTime = emitterTime;
     this.addedAll = false;
-};
+    this.colour = createVector(0,0,0);
 
+};
+ParticleEngine.prototype.SetColour = function(colour)
+{
+    this.colour = colour;
+};
 // A Method to run all of the particles
 ParticleEngine.prototype.run = function(dt)
 {
@@ -42,13 +47,13 @@ ParticleEngine.prototype.Emitter = function()
         this.particles.push(
             new Particle(createVector(this.startPos.x,this.startPos.y),this.life,
                 createVector(random(-1, 1), random(-1, 0)),
-                createVector(0, 0.05)
+                createVector(0, 0.05),
+                this.colour
             )
         );
         this.currentitr++;
         if(this.currentitr == this.numOfParticles-1)
         {
-            console.log("added all");
             this.addedAll = true;
         }
     }
@@ -84,12 +89,13 @@ ParticleEngine.prototype.addParticles = function(num,lifespam)
 
 
 /*------------------Particle------------------------------*/
-var Particle = function(pos,life,vel,accel)
+var Particle = function(pos,life,vel,accel,colour)
 {
     this.pos = pos;
     this.life = life;
     this.vel = vel;
     this.accel = accel;
+    this.colour = colour;
 };
 
 // now for the methods of the Particle object
@@ -105,9 +111,10 @@ Particle.prototype.update = function(dt)
 // This will use the P5 render stuff
 Particle.prototype.render = function()
 {
-    stroke(200,this.life);
-    strokeWeight(2);
-    fill(127,this.life);
+    noStroke();
+    //stroke(200,this.life);
+    //strokeWeight(2);
+    fill(this.colour.x, this.colour.y, this.colour.z,this.life);
     ellipse(this.pos.x,this.pos.y,12,12);
 };
 
@@ -146,8 +153,8 @@ function setup()
     // Need to create the p5 canvas
     createCanvas(800,600);
     particleEngine = new ParticleEngine(createVector(width/2,50),300,1000,50);
+    particleEngine.SetColour(createVector(198, 135, 17));
     //particleEngine.addParticles(1,1000);
-    console.log("asda");
     lastUpdate = Date.now();
 };  
 
@@ -156,7 +163,7 @@ function setup()
 function draw()
 {
     FPS();
-    console.log("Current FPS: " + Math.round(fps));
+    //console.log("Current FPS: " + Math.round(fps));
     // set the background colour of the canvas
     background(51);
 
